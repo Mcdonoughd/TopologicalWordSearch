@@ -384,7 +384,7 @@ def draw_cubeMap(cubeMap,heightMap,N=7):
             # 2*z, 2*x is for spacing between blocks
             # h is cut in half to make it look smaller
             # y is cut in 4 because y grows from cube mid point, so it needs to be h/2
-            cube = pi3d.Cuboid(x=2*x, y=heightMap[i][j]/4, z=2 * z, h=heightMap[i][j]/2)
+            cube = pi3d.Cuboid(x=1.25*x, y=heightMap[i][j]/4, z=1.25 * z, h=heightMap[i][j]/2)
 
             cube_row.append(cube)  # Add cube to the list
             x += 1
@@ -417,12 +417,12 @@ def placeWords(fname,letter_matrix, N):
             add_word_down(content, letter_matrix, N)
 
 
-def main(fname = "assets/dictionary/words", N = 12):
+def main(fname = "assets/dictionaries/words.txt", N = 12):
     # create display
     DISPLAY = pi3d.Display.create(background=(0.7, 0.3, 0.9, 1))
 
     # create camera and move it back a bit
-    CAM = pi3d.Camera(at=(0.5,N/2,0.0),eye =(0.5,N/2,-2.5*N))
+    CAM = pi3d.Camera(at=(0.5,N/2,0.0),eye =(0.25,N/2,-1.5*N))
 
     letter_matrix = create_letter_matrix(N)
 
@@ -430,10 +430,8 @@ def main(fname = "assets/dictionary/words", N = 12):
     heightMap = gen_heightMap(N)
     draw_cubeMap(cubeMap,heightMap,N)
 
-
     # create keyboard listener
     keys = pi3d.Keyboard()
-
 
     # load shaders
     shader = pi3d.Shader("uv_bump")
@@ -443,7 +441,6 @@ def main(fname = "assets/dictionary/words", N = 12):
 
     #Place the words in the matrix
     placeWords(fname, letter_matrix, N)
-
 
     randomize_empty_cells(letter_matrix,N)
     print(letter_matrix)
@@ -459,11 +456,8 @@ def main(fname = "assets/dictionary/words", N = 12):
             cube.set_draw_details(lshader, [string1], 1.0)
             cube.set_light(light,0)
 
-
-
     # display loop
     try:
-
         while DISPLAY.loop_running():
             CAM.relocate(rot=r,distance=[-5,-5,-5])
 
@@ -472,16 +466,13 @@ def main(fname = "assets/dictionary/words", N = 12):
                 for cube in cuberow:
                     cube.draw()
 
-            r += 1
-
-            #only do one rotation
-            if r == 360:
-                break
-
             # take a screenshot every 90 degree rotation
             if r % 90 == 0:
                 pi3d.util.Screenshot.screenshot("screen_" + str(r) + ".png")
-
+            r += 1
+            # only do one rotation
+            if r == 360:
+                break
             # handle escape
             if keys.read() == 27:
                 break
